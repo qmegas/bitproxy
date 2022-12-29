@@ -1,0 +1,323 @@
+============================================================
+【 ソフト名 】ハッシュ DLL
+【  作成者  】水無瀬 優 (postmaster@katsura-kotonoha.sakura.ne.jp)
+============================================================
+
+＜目次＞
+・使用手順
+・CreateAlgorithm
+・DestroyAlgorithm
+・InitAlgorithm
+・InputData
+・GetHashLength
+・GetHash
+・GetHashTextLength
+・GetHashText
+・エラー識別値
+　・0x00000000
+　・0x00000001
+　・0x00000100
+
+------------------------------------------------------------
+
+使用手順
+　１．LoadLibrary() で DLL をロードする。
+　２．GetProcAddress() で関数へのポインタを取得する。
+　３．CreateAlgorithm() でアルゴリズムへのハンドルを取得する。
+　４．InitAlgorithm() でアルゴリズムを初期化する。
+　５．InputData() でデータをアルゴリズムへ入力する。
+　６．GetHash() で計算結果を受け取る。
+　７．DestroyAlgorithm() でアルゴリズムへのハンドルを解放する。
+　８．FreeLibrary() で DLL を開放する。
+
+------------------------------------------------------------
+
+CreateAlgorithm
+
+概要
+　アルゴリズムへのハンドルを作成します。
+
+序数
+　1
+
+宣言
+　HANDLE WINAPI CreateAlgorithm( void );
+
+返値
+　作成したアルゴリズムへのハンドルを返します。
+　アルゴリズムの作成に失敗した場合は null を返します。
+　作成したアルゴリズムは関数 DestroyAlgorithm() で破棄します。
+
+使用例
+	HANDLE hAlgorithm = CreateAlgorithm();
+	if ( hAlgorithm )
+	{
+		if ( 0 == InitAlgorithm( hAlgorithm ) )
+		{
+			if ( 0 == InputData( hAlgorithm, data, length ) )
+			{
+				const int hashsize = GetHashLength( hAlgorithm );
+				if ( 0 < hashsize )
+				{
+					void *buffer = malloc( hashsize );
+					if ( buffer )
+					{
+						if ( 0 == GetHash( hAlgorithm, buffer, hashsize ) )
+						{
+							…… 省略 ……
+						}
+					}
+				}
+			}
+		}
+
+		if ( 0 != DestroyAlgorithm( hAlgorithm ) )
+		{
+			…… 省略 ……
+		}
+	}
+
+
+------------------------------------------------------------
+
+DestroyAlgorithm
+
+概要
+　アルゴリズムを破棄します。
+
+序数
+　2
+
+宣言
+　DWORD WINAPI DestroyAlgorithm( HANDLE hAlgorithm );
+
+引数
+HANDLE hAlgorithm
+　破棄するアルゴリズムへのハンドルを指定します。
+
+返値
+　関数が成功した場合は 0 を返します。
+　関数が失敗した場合は 0 以外の エラー識別値 を返します。
+
+------------------------------------------------------------
+
+InitAlgorithm
+
+概要
+　アルゴリズムを初期化します。
+　アルゴリズムに入力済みのデータは全て無効になります。
+
+序数
+　3
+
+宣言
+　DWORD WINAPI InitAlgorithm( HANDLE hAlgorithm );
+
+引数
+HANDLE hAlgorithm
+　アルゴリズムへのハンドルを指定します。
+返値
+　関数が成功した場合は 0 を返します。
+　関数が失敗した場合は 0 以外の エラー識別値 を返します。
+
+------------------------------------------------------------
+
+InputData
+
+概要
+　ハッシュを計算したいデータをアルゴリズムへ入力します。
+　データの入力は複数回に分けて行うこともできます。
+
+序数
+　4
+
+宣言
+　DWORD WINAPI InputData( HANDLE hAlgorithm, const void *data, int length );
+
+引数
+HANDLE hAlgorithm
+　アルゴリズムへのハンドルを指定します。
+
+const void *data
+　書き込むデータへのポインタを指定します。
+
+int length
+　引数 data が指す領域のサイズを バイト数 で指定します。
+　0 以下の値を指定すると関数は失敗します。
+
+返値
+　関数が成功した場合は 0 を返します。
+　関数が失敗した場合は 0 以外の エラー識別値 を返します。
+
+使用例
+	char buffer[ 1024 ];
+	while( 0 < (length = fread( buffer, 1, sizeof( buffer ), fp )) )
+	{
+		if ( 0 == InputData( hAlgorithm, buffer, length ) )
+		{
+			…… 省略 ……
+		}
+	}
+
+------------------------------------------------------------
+
+GetHashLength
+
+概要
+　ハッシュのサイズを バイト数 で返します。
+
+序数
+　5
+
+宣言
+　int WINAPI GetHashLength( HANDLE hAlgorithm );
+
+引数
+HANDLE hAlgorithm
+　アルゴリズムへのハンドルを指定します。
+
+返値
+　ハッシュのサイズを バイト数 で返します。
+　関数が失敗した場合は 0 以下の値を返します。
+
+------------------------------------------------------------
+
+GetHash
+
+概要
+　アルゴリズムに入力されたデータからハッシュを計算します。
+
+序数
+　6
+
+宣言
+　DWORD WINAPI GetHash( HANDLE hAlgorithm, void *buffer, int bufsize );
+
+引数
+HANDLE hAlgorithm
+　アルゴリズムへのハンドルを指定します。
+
+void *buffer
+　バッファへのポインタを指定します。
+　この領域に ハッシュ の先頭 bufsize バイトが格納されます。
+
+int bufsize
+　引数 buffer が指す領域のサイズを バイト数 で指定します。
+　ハッシュを格納する領域に必要なサイズは関数 GetHashLength() で取得します。
+　0 以下の値を指定すると関数は失敗します。
+
+返値
+　関数が成功した場合は 0 を返します。
+　関数が失敗した場合は 0 以外の エラー識別値 を返します。
+
+使用例
+	const int hashsize = GetHashLength( hAlgorithm );
+	if ( 0 < hashsize )
+	{
+		void *buffer = malloc( hashsize );
+		if ( buffer )
+		{
+			if ( 0 == GetHash( hAlgorithm, buffer, hashsize ) )
+			{
+				…… 省略 ……
+			}
+			free( buffer );
+		}
+	}
+
+------------------------------------------------------------
+
+GetHashTextLength
+
+概要
+　ハッシュ文字列の長さを バイト数 で返します。
+
+序数
+　7
+
+宣言
+　int WINAPI GetHashTextLength( HANDLE hAlgorithm );
+
+引数
+HANDLE hAlgorithm
+　アルゴリズムへのハンドルを指定します。
+
+返値
+　ハッシュ文字列の長さを バイト数 で返します。
+　ハッシュ文字列の長さに終端文字 '\0' は含まれません。
+　関数が失敗した場合は 0 以下の値を返します。
+
+使用例
+	const int length = GetHashTextLength( hAlgorithm );
+	if ( 0 < length )
+	{
+		const int bufsize = 1 + length;
+		void *buffer = malloc( bufsize );
+		if ( buffer )
+		{
+			if ( 0 == GetHashText( hAlgorithm, buffer, bufsize ) )
+			{
+				…… 省略 ……
+			}
+			free( buffer );
+		}
+	}
+
+------------------------------------------------------------
+
+GetHashText
+
+概要
+　アルゴリズムに入力されたデータからハッシュ文字列を取得します。
+
+序数
+　8
+
+宣言
+　DWORD WINAPI GetHashText( HANDLE hAlgorithm, char *buffer, int bufsize );
+
+引数
+HANDLE hAlgorithm
+　アルゴリズムへのハンドルを指定します。
+
+char *buffer
+　バッファへのポインタを指定します。
+　この領域に ハッシュ文字列 の先頭 bufsize-1 バイトが格納されます。
+　文字列末尾には終端文字 '\0' が付加されます。
+
+int bufsize
+　引数 buffer が指す領域のサイズを バイト数 で指定します。
+　ハッシュ文字列を格納する領域に必要なサイズは関数 GetHashTextLength() で取得します。
+　0 以下の値を指定すると関数は失敗します。
+
+返値
+　関数が成功した場合は 0 を返します。
+　関数が失敗した場合は 0 以外の エラー識別値 を返します。
+
+使用例
+	const int length = GetHashTextLength( hAlgorithm );
+	if ( 0 < length )
+	{
+		const int bufsize = 1 + length;
+		void *buffer = malloc( bufsize );
+		if ( buffer )
+		{
+			if ( 0 == GetHashText( hAlgorithm, buffer, bufsize ) )
+			{
+				…… 省略 ……
+			}
+			free( buffer );
+		}
+	}
+
+------------------------------------------------------------
+
+エラー識別値
+
+・0x00000000
+　関数は正常に終了しました。 
+・0x00000001
+　指定された引数が不正です。 
+・0x00000100
+　関数内部でエラーが発生しました。
+

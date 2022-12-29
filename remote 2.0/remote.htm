@@ -1,0 +1,103 @@
+<!doctype html>
+
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>BitTorrent Proxy - Remote control</title>
+		<!-- style></style -->
+		<link rel="stylesheet" href="remote.css">
+		<!-- script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script -->
+		<script src="jquery.min.js"></script>
+		<script src="remote.js"></script>
+	</head>
+	<body>
+		<div class="header-box">
+			<div class="cell">
+				<div class="logo">BitTorrent Proxy</div>
+				<div class="logo-small">Remote Control</div> 
+			</div>
+			<div class="cell relative">
+				<ul id="topmenu">
+					<li><a href="#" id="tab_1" class="tab" data-id="1">Скачка</a></li>
+					<li><a href="#" id="tab_2" class="tab" data-id="2">Эмуляция</a></li>
+					<li><a href="#" id="tab_3" class="tab" data-id="3">Общее</a></li>
+				</ul>
+				<div id="ajax_loader" style="display: none"></div>
+			</div>
+		</div>
+		
+		<div class="data">
+			<div class="auth-box">
+				<div class="table-header">Авторизация</div>
+				<div class="table-data">
+					<div class="cell">Пароль:</div>
+					<div class="cell"><input id="auth-pass" type="password"></div>
+				</div>
+				<div class="auth-button">
+					<input type="button" value="Авторизироваться" id="auth-do">
+				</div>
+			</div>
+		</div>
+		
+		<!-- 
+  
+  <table border="0" cellpadding="5" cellspacing="0" class="simp_border"  style="display: none" id="login_box">
+				<tr>
+					<td colspan="2" align="center" class="table_head">Авторизация</td>
+				</tr>
+				<tr>
+					<td align="right">Пароль:</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td colspan="2" align="center"></td>
+				</tr>
+			</table>
+  
+  
+  div id="main_box" align="center">
+			<br />
+			<table border="0" cellspacing="0" class="error_table" id="error_box"  style="display: none">
+				<tr>
+					<td align="left" class="error_head">Ошибка!</td>
+					<td align="right" class="error_head"><a href="javascript:;" class="style1" onClick="showHide('error_box')">X</a></td>
+				</tr>
+				<tr>
+					<td colspan="2" align="center" class="normal" id="error_desc"></td>
+				</tr>
+			</table>
+			<br />
+			
+			
+			
+			<table border="0" class="simp_border" id="info_box" style="display: none">
+				<tr class="table_head">
+					<td colspan="9" align="center">Общая информация (<a href="javascript:;" onClick="request_info();">обновить</a>) </td>
+				</tr>
+				<tr class="normal">
+					<td>Версия программы:</td>
+					<td id="infobox_ver"></td>
+				</tr>
+				<tr class="normal">
+					<td>Программа работает:</td>
+					<td id="infobox_time"></td>
+				</tr>
+				<tr class="normal">
+					<td>Заданий скачки:</td>
+					<td id="infobox_down"></td>
+				</tr>
+				<tr class="normal">
+					<td>Заданий эмуляции:</td>
+					<td id="infobox_emul"></td>
+				</tr>
+			</table>
+			
+			<table width="100%" border="0" class="simp_border" id="emulation_box" style="display: none">
+			</table>
+			
+			<table width="100%" border="0" class="simp_border" id="download_box" style="display: none">
+			</table>
+		</div>
+		<script>show_info();</script -->
+	</body>
+</html>

@@ -4,6 +4,8 @@ Written using Visual Basic 5
 
 Project freezed since 2011
 
+License: GNU GPLv3
+
 # Release history (russian only)
 
 BitTorrent Proxy v1.46 (27.06.2011)
